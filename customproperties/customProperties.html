@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<div id='testElement'></div>
+
+<script>
+CSS.registerProperty(
+{
+  name: "--my-image",
+  syntax: "<image>",
+  inherits: false,
+  initialValue: "url()"
+});
+</script>
+
+<style>
+#testElement {
+  --my-image: url("https://www.chromium.org/_/rsrc/1438879449147/config/customLogo.gif?revision=3");
+  background-image: var(--my-image);
+  width: 200px;
+  height: 200px;
+}
+</style>
+
+<script>
+// NOTE: All "ERR" notes refer to the line below
+
+
+// ---------------------------------------------------------
+// Print computed values for background-image and --my-image
+// ---------------------------------------------------------
+console.log("Initial values from style-sheet");
+var computedStyle = getComputedStyleMap(testElement);
+// console.log("typed computed --my-image: ");
+// ERR: throws TypeError("Invalid propertyName: --my-image")
+// console.log(computedStyle.get("--my-image"));
+console.log("typed computed background-image: ")
+console.log(computedStyle.get("background-image"));
+console.log("string computed --my-image: " + getComputedStyle(testElement).getPropertyValue("--my-image"));
+console.log("string computed background-image: " + getComputedStyle(testElement).getPropertyValue("background-image"));
+console.log("");
+
+
+// ------------------------------------------
+// Set value of --my-image to a different URL
+// ------------------------------------------
+var newFile = "https://www.chromium.org/_/rsrc/1438811752264/chromium-projects/logo_chrome_color_1x_web_32dp.png";
+// ERR: throws TypeError("Invalid propertyName: --my-image")
+// testElement.styleMap.set("--my-image",
+//     new CSSURLImageValue(newFile));
+testElement.style = "--my-image: url(" + newFile + ");"; // STAND-IN
+console.log("Values after setting --my-image to a different URL")
+console.log("typed computed background-image: ")
+console.log(computedStyle.get("background-image"));
+console.log("string computed --my-image: " + getComputedStyle(testElement).getPropertyValue("--my-image"));
+console.log("string computed background-image: " + getComputedStyle(testElement).getPropertyValue("background-image"));
+console.log("");
+
+
+// --------------------------------------
+// Set value of background-image to a URL
+// --------------------------------------
+testElement.styleMap.set("background-image", new CSSURLImageValue("WAT"));
+console.log("Values after setting background-image to a URL value (instead of var(--my-image))");
+console.log("typed computed background-image: ")
+console.log(computedStyle.get("background-image"));
+console.log("string computed --my-image: " + getComputedStyle(testElement).getPropertyValue("--my-image"));
+console.log("string computed background-image: " + getComputedStyle(testElement).getPropertyValue("background-image"));
+console.log("");
+
+
+// -----------------------------------------------------
+// Set value of background-image back to var(--my-image)
+// -----------------------------------------------------
+// ERR: throws TypeError("Illegal constructor") - constructor isn't exposed in IDL
+// testElement.styleMap.set("background-image", new CSSUnparsedValue("var(--my-image)"));
+testElement.style.backgroundImage = "var(--my-image)"; // STAND-IN
+console.log("Values after setting background-image back to var(--my-image)");
+console.log("typed computed background-image: ")
+console.log(computedStyle.get("background-image"));
+console.log("string computed --my-image: " + getComputedStyle(testElement).getPropertyValue("--my-image"));
+console.log("string computed background-image: " + getComputedStyle(testElement).getPropertyValue("background-image"));
+console.log("");
+
+
+// ----------------------------------------------------------
+// Print specified values for background-image and --my-image
+// ----------------------------------------------------------
+console.log("typed specified background-image: ");
+console.log(testElement.styleMap.get("background-image"));
+// console.log("typed specified --my-image: ");
+// ERR: throws TypeError("Invalid propertyName: --my-image")
+// console.log(testElement.styleMap.get("--my-image"));
+console.log("");
+
+</script>
+</body>
+</html>
